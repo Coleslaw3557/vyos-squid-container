@@ -19,14 +19,19 @@ from azure.core.exceptions import HttpResponseError
 import logging
 
 # Set up logging
+# Get debug level from environment (default to INFO)
+debug_level = os.environ.get('DEBUG_LEVEL', 'INFO').upper()
+log_level = getattr(logging, debug_level, logging.INFO)
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=log_level,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
+logger.info(f"Logging level set to: {debug_level}")
 
 class SquidLogMonitor:
     def __init__(self):
@@ -128,7 +133,7 @@ class SquidLogMonitor:
                 else:
                     action = 'unknown'
             
-            return {
+            parsed_entry = {
                 'TimeGenerated': datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat(),
                 'SourceIP': client_ip,
                 'DestinationHost': destination,
@@ -143,6 +148,9 @@ class SquidLogMonitor:
                 'LogType': 'squid_sni_filter',
                 'ProxyMode': self.proxy_mode
             }
+            
+            logger.debug(f"Parsed entry: {parsed_entry}")
+            return parsed_entry
             
         except Exception as e:
             logger.error(f"Error parsing Squid log line: {e} - Line: {line[:100]}")
@@ -163,6 +171,8 @@ class SquidLogMonitor:
                     line = line.strip()
                     if not line:
                         continue
+                    
+                    logger.debug(f"Processing line: {line[:100]}")
                     
                     # Check if we've already processed this entry
                     line_hash = hash(line)
@@ -191,6 +201,8 @@ class SquidLogMonitor:
             batch_size = 100
             for i in range(0, len(events), batch_size):
                 batch = events[i:i + batch_size]
+                
+                logger.debug(f"Sending batch: {json.dumps(batch, indent=2)}")
                 
                 self.ingestion_client.upload(
                     rule_id=self.dcr_immutable_id,
