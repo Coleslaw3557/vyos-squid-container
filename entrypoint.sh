@@ -43,6 +43,7 @@ echo "Azure Log Analytics configured:"
 echo "  DCE Endpoint: ${DCE_ENDPOINT}"
 echo "  DCR ID: ${DCR_IMMUTABLE_ID}"
 echo "  Stream: ${DCR_STREAM_NAME}"
+echo "  Auth: Using VM's system-assigned managed identity"
 
 # Validate whitelist file exists
 if [ ! -f "/etc/squid/allowed_domains.txt" ]; then
