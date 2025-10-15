@@ -1,0 +1,51 @@
+# Container images
+*.tar
+*.tar.gz
+*.tar.xz
+squid-whitelist.tar
+
+# Build artifacts
+test-allowed_domains.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Test whitelist (don't commit actual domain lists)
+test-allowed_domains.txt
+allowed_domains.txt
+
+# Environment files
+.env
+.env.local
